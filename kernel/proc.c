@@ -119,6 +119,8 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  p->priority = 3;
+  memset(p->ticks, 0, 4*sizeof(int));
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -437,29 +439,52 @@ wait(uint64 addr)
 void
 scheduler(void)
 {
-  struct proc *p;
+  struct proc *p, *p1;
   struct cpu *c = mycpu();
-  
+
+  int rr_ticks[4] = {64, 4, 2, 1};
+  int pq_ticks[4] = {__INT32_MAX__, 32, 16, 8};
+
   c->proc = 0;
   for(;;){
-    // Avoid deadlock by ensuring that devices can interrupt.
     intr_on();
 
-    for(p = proc; p < &proc[NPROC]; p++) {
-      acquire(&p->lock);
-      if(p->state == RUNNABLE) {
-        // Switch to chosen process.  It is the process's job
-        // to release its lock and then reacquire it
-        // before jumping back to us.
-        p->state = RUNNING;
+    struct proc *highP; 
+
+    for (p = proc; p < &proc[NPROC]; p++){
+      if (p->state != RUNNABLE)
+        continue;
+      
+      highP = p;
+
+      for (p1 = proc; p1 < &proc[NPROC]; p1++){
+        if (p1->state != RUNNABLE)
+          continue;
+        if (highP->priority > p1->priority)
+          highP = p1;
+      }
+      p = highP;
+
+      for (int t = 0; t < rr_ticks[p->priority]; t++){
+        if (p->ticks[p->priority] >= pq_ticks[p->priority]){
+          p->priority--;
+          break;
+        }
+
+        if (p->state != RUNNABLE)
+          break;
+
+        acquire(&p->lock);
         c->proc = p;
+        p->state = RUNNING;
+
         swtch(&c->context, &p->context);
 
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
+        p->ticks[p->priority]++;
+
         c->proc = 0;
+        release(&p->lock);
       }
-      release(&p->lock);
     }
   }
 }
@@ -653,4 +678,39 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+// Return the number of files that the process
+// identified by pid currently has open.
+int
+getfilenum(int pid) {
+  struct proc *p;
+  int filenum;
+
+  filenum = 0;
+
+  // Scan through table looking for process with specified pid.
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if (p->pid == pid){
+      // Count opened files by process.
+      for(int fd = 0; fd < NOFILE; fd++){
+        if(p->ofile[fd]){
+          // Found opened file.
+          filenum++;
+        }
+      }
+      release(&p->lock);
+      return filenum;
+    }
+    release(&p->lock);
+  }
+  return filenum;
+}
+
+int
+getprocinfo(uint dst_addr)
+{
+  struct proc *p = myproc();
+  return copyout(p->pagetable, dst_addr, (char *) &proc, sizeof(proc));
 }

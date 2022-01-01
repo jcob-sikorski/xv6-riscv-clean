@@ -95,3 +95,31 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// Return the year of which
+// Unix version 6 was released
+uint64
+sys_getyear(void) 
+{
+  return 1975;
+}
+
+uint64
+sys_getfilenum(void)
+{
+  int pid;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  
+  return getfilenum(pid);
+}
+
+uint64
+sys_getprocinfo(void)
+{
+  uint64 dst_addr;
+  if(argaddr(0, &dst_addr) < 0)
+    return -1;
+  return getprocinfo(dst_addr);
+}

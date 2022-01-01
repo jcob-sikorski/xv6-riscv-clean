@@ -19,6 +19,7 @@ cat(int fd)
     fprintf(2, "cat: read error\n");
     exit(1);
   }
+  printf("total: %d\n", getfilenum(getpid()));
 }
 
 int

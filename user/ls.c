@@ -23,10 +23,11 @@ fmtname(char *path)
 }
 
 void
-ls(char *path)
+ls(char *path, int ofiles)
 {
   char buf[512], *p;
   int fd;
+  int filenum = 0;
   struct dirent de;
   struct stat st;
 
@@ -34,7 +35,6 @@ ls(char *path)
     fprintf(2, "ls: cannot open %s\n", path);
     return;
   }
-
   if(fstat(fd, &st) < 0){
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
@@ -43,7 +43,10 @@ ls(char *path)
 
   switch(st.type){
   case T_FILE:
-    printf("%s %d %d %l\n", fmtname(path), st.type, st.ino, st.size);
+    if (ofiles == 1){
+      filenum = getfilenum(getpid());
+    }
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, st.size);
     break;
 
   case T_DIR:
@@ -63,9 +66,15 @@ ls(char *path)
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
+      if (ofiles == 1){
+        filenum += getfilenum(getpid());
+      }
       printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
     }
     break;
+  }
+  if (ofiles == 1){
+    printf("total: %d\n", filenum);
   }
   close(fd);
 }
@@ -74,12 +83,15 @@ int
 main(int argc, char *argv[])
 {
   int i;
-
   if(argc < 2){
-    ls(".");
+    ls(".", 0);
+    exit(0);
+  }
+  if (argc == 2 && strcmp(argv[argc], "-l")){
+    ls(".", 1);
     exit(0);
   }
   for(i=1; i<argc; i++)
-    ls(argv[i]);
+    ls(argv[i], 0);
   exit(0);
 }
