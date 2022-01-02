@@ -20,6 +20,5 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
-#define SYS_getyear 22
-#define SYS_getfilenum 23
-#define SYS_getprocinfo 24
+#define SYS_getfilenum 22
+#define SYS_getprocinfo 23

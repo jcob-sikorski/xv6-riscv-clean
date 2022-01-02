@@ -24,7 +24,6 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int getyear(void);
 int getfilenum(int);
 int getprocinfo(struct proc*);
 

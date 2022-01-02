@@ -104,7 +104,6 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
-extern uint64 sys_getyear(void);
 extern uint64 sys_getfilenum(void);
 extern uint64 sys_getprocinfo(void);
 
@@ -130,7 +129,6 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_getyear] sys_getyear,
 [SYS_getfilenum] sys_getfilenum,
 [SYS_getprocinfo] sys_getprocinfo,
 };
