@@ -707,10 +707,3 @@ getfilenum(int pid) {
   }
   return filenum;
 }
-
-int
-getprocinfo(uint dst_addr)
-{
-  struct proc *p = myproc();
-  return copyout(p->pagetable, dst_addr, (char *) &proc, sizeof(proc));
-}

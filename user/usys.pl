@@ -37,4 +37,3 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 entry("getfilenum");
-entry("getprocinfo");

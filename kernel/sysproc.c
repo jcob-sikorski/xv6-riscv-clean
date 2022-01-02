@@ -106,12 +106,3 @@ sys_getfilenum(void)
   
   return getfilenum(pid);
 }
-
-uint64
-sys_getprocinfo(void)
-{
-  uint64 dst_addr;
-  if(argaddr(0, &dst_addr) < 0)
-    return -1;
-  return getprocinfo(dst_addr);
-}
