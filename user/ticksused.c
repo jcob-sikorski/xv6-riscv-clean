@@ -5,7 +5,7 @@ int
 main(int argc, char *argv[])
 {
     int i, x;
-    printf("testing...\n");
+    printf("testing...%d\n", getpid());
     for(i = 1; i < 1000000; i++){
         x = x + i;
     }
