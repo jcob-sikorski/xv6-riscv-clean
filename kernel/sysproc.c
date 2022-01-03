@@ -112,16 +112,16 @@ uint sys_mprotect(void)
   char* addr = 0;
   int len;
 
-  if(argptr(0, &addr, sizeof(void*)) < 0)
+  if(argaddr(1, &addr) < 0)
     return -1;
-  if(argint(1, &len) < 0)
+  if(argaddr(2, &len) < 0)
     return -1;
   
   // checking len bounds
   if(len == 0 || len < 0 || len > myproc()->sz)
     return -1;
   // checking addr bounds
-  if((uint)addr < 0 || (uint)addr == KERNBASE || (uint)addr > KERNBASE)
+  if(addr < 0 || addr == KERNBASE || addr > KERNBASE)
     return -1;
 	// checking addr alignmnet
   if(((unsigned long)addr & 15) != 0)
@@ -137,17 +137,17 @@ uint sys_mprotect(void)
 
   // change protection bits for "len" pages
   for(int i = 0; i < len; i++) {
-    pte_t *pte = &pagetable[PTX(addr + i)];
+    pte_t *pte = &pagetable[PX(0, addr + i)];
     *pte &= ~PTE_W;
   }
   
-  //tell the hardware that the page table has changed
-  lcr3(V2P(myproc()->pagetable));
+  // tell the hardware that the page table has changed
+  w_satp(MAKE_SATP(myproc()->pagetable));
 
   return 0;
 }
 
-uint sys_mprotect(void)
+uint sys_munprotect(void)
 {
   char* addr = 0;
   int len;
@@ -161,7 +161,7 @@ uint sys_mprotect(void)
   if(len == 0 || len < 0 || len > myproc()->sz)
     return -1;
   // checking addr bounds
-  if((uint)addr < 0 || (uint)addr == KERNBASE || (uint)addr > KERNBASE)
+  if(addr < 0 || addr == KERNBASE || addr > KERNBASE)
     return -1;
 	// checking addr alignmnet
   if(((unsigned long)addr & 15) != 0)
@@ -177,12 +177,12 @@ uint sys_mprotect(void)
 
   // change protection bits for "len" pages
   for(int i = 0; i < len; i++) {
-    pte_t *pte = &pagetable[PTX(addr + i)];
+    pte_t *pte = &pagetable[PX(0, addr + i)];
     *pte |= PTE_W;
   }
   
-  //tell the hardware that the page table has changed
-  lcr3(V2P(myproc()->pagetable));
+  // tell the hardware that the page table has changed
+  w_satp(MAKE_SATP(myproc()->pagetable));
 
   return 0;
 }
