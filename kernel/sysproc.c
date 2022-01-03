@@ -106,3 +106,83 @@ sys_getfilenum(void)
   
   return getfilenum(pid);
 }
+
+uint sys_mprotect(void)
+{
+  char* addr = 0;
+  int len;
+
+  if(argptr(0, &addr, sizeof(void*)) < 0)
+    return -1;
+  if(argint(1, &len) < 0)
+    return -1;
+  
+  // checking len bounds
+  if(len == 0 || len < 0 || len > myproc()->sz)
+    return -1;
+  // checking addr bounds
+  if((uint)addr < 0 || (uint)addr == KERNBASE || (uint)addr > KERNBASE)
+    return -1;
+	// checking addr alignmnet
+  if(((unsigned long)addr & 15) != 0)
+    return -1;
+
+  pagetable_t pagetable = myproc()->pagetable;
+
+  // get page table entry
+  for(int level = 2; level > 0; level--) {
+    pte_t *pte = &(pagetable)[PX(level, addr)];
+    pagetable = (pagetable_t)PTE2PA(*pte);
+  }
+
+  // change protection bits for "len" pages
+  for(int i = 0; i < len; i++) {
+    pte_t *pte = &pagetable[PTX(addr + i)];
+    *pte &= ~PTE_W;
+  }
+  
+  //tell the hardware that the page table has changed
+  lcr3(V2P(myproc()->pagetable));
+
+  return 0;
+}
+
+uint sys_mprotect(void)
+{
+  char* addr = 0;
+  int len;
+
+  if(argptr(0, &addr, sizeof(void*)) < 0)
+    return -1;
+  if(argint(1, &len) < 0)
+    return -1;
+  
+  // checking len bounds
+  if(len == 0 || len < 0 || len > myproc()->sz)
+    return -1;
+  // checking addr bounds
+  if((uint)addr < 0 || (uint)addr == KERNBASE || (uint)addr > KERNBASE)
+    return -1;
+	// checking addr alignmnet
+  if(((unsigned long)addr & 15) != 0)
+    return -1;
+
+  pagetable_t pagetable = myproc()->pagetable;
+
+  // get page table entry
+  for(int level = 2; level > 0; level--) {
+    pte_t *pte = &(pagetable)[PX(level, addr)];
+    pagetable = (pagetable_t)PTE2PA(*pte);
+  }
+
+  // change protection bits for "len" pages
+  for(int i = 0; i < len; i++) {
+    pte_t *pte = &pagetable[PTX(addr + i)];
+    *pte |= PTE_W;
+  }
+  
+  //tell the hardware that the page table has changed
+  lcr3(V2P(myproc()->pagetable));
+
+  return 0;
+}
