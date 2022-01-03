@@ -105,7 +105,6 @@ extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_getfilenum(void);
-extern uint64 sys_getprocinfo(void);
 extern uint64 sys_mprotect(void);
 extern uint64 sys_munprotect(void);
 
@@ -132,7 +131,6 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_getfilenum] sys_getfilenum,
-[SYS_getprocinfo] sys_getprocinfo,
 [SYS_mprotect] sys_mprotect,
 [SYS_munprotect] sys_munprotect,
 };
