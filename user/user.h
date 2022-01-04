@@ -25,6 +25,9 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int getfilenum(int);
+int mprotect(uint64, uint64);
+int munprotect(uint64, uint64);
+
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -133,6 +133,15 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_ticksused\
+	$U/_test1\
+	$U/_test2\
+	$U/_test3\
+	$U/_test4\
+	$U/_test5\
+	$U/_test6\
+	$U/_test7\
+	$U/_test8\
+	$U/_test9\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
