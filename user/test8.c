@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     int f = fork();
     if(f)
     {
-        printf(1, "XV6_TEST_OUTPUT: Inside child process\n");
+        printf("XV6_TEST_OUTPUT: Inside child process\n");
         *p = 'w'; //page fault trap 14 should occur here
 
         printf("XV6_TEST_OUTPUT: This should not be printed\n");
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        (void)wait(f);
+        (void)wait(&f);
     }
     
     exit(0);
