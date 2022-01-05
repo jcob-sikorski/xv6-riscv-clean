@@ -182,7 +182,7 @@ uint sys_munprotect(void)
   }
   
   // tell the hardware that the page table has changed
-  w_satp(MAKE_SATP(myproc()->pagetable));
+  sfence_vma();
 
   return 0;
 }
