@@ -11,10 +11,10 @@
 /*testing whether munprotect undoes the action of mprotect*/
 int main(int argc, char *argv[])
 {
-    int ret = mprotect((uintptr_t)4096, 1);
+    int ret = mprotect((int*)4096, 1);
     printf("XV6_TEST_OUTPUT: Return value of mprotect : %d\n", ret);
 
-    ret = munprotect((uintptr_t)4096, 1);
+    ret = munprotect((int*)4096, 1);
     printf("XV6_TEST_OUTPUT: Return value of munprotect : %d\n", ret);
 
     *(char**)0x1000 = "this should not cause a pagefault";

@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {   
     char *p = (char *)0x1000;
-    int ret = mprotect((uintptr_t)p, 1);
+    int ret = mprotect((int*)p, 1);
     printf("XV6_TEST_OUTPUT: Return value of mprotect on memory 0x1000: %d\n", ret);
 
     int f = fork();

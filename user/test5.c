@@ -11,10 +11,10 @@
 /*testing good arguments for mprotect*/
 int main(int argc, char *argv[])
 {
-    int ret = mprotect((uintptr_t)4096, 1);
+    int ret = mprotect((int*)4096, 1);
     printf("XV6_TEST_OUTPUT: Return value of mprotect with len 1: %d\n", ret);
 
-    ret = mprotect((uintptr_t)4096, 2);
+    ret = mprotect((int*)4096, 2);
     printf("XV6_TEST_OUTPUT: Return value of mprotect with len 2: %d\n", ret);
     exit(0);
 }
