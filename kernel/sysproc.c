@@ -109,12 +109,12 @@ sys_getfilenum(void)
 
 uint sys_mprotect(void)
 {
-  uint64 addr = 0;
+  uint64 addr;
   uint64 len;
 
-  if(argaddr(1, &addr) < 0)
+  if(argaddr(0, &addr) < 0)
     return -1;
-  if(argaddr(2, &len) < 0)
+  if(argaddr(1, &len) < 0)
     return -1;
   
   // checking len bounds
@@ -149,12 +149,12 @@ uint sys_mprotect(void)
 
 uint sys_munprotect(void)
 {
-  uint64 addr = 0;
+  uint64 addr;
   uint64 len;
 
-  if(argaddr(1, &addr) < 0)
+  if(argaddr(0, &addr) < 0)
     return -1;
-  if(argaddr(2, &len) < 0)
+  if(argaddr(1, &len) < 0)
     return -1;
   
   // checking len bounds
