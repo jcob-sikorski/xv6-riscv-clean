@@ -11,8 +11,6 @@
 /*testing whether munprotect undoes the action of mprotect*/
 int main(int argc, char *argv[])
 {
-    *(char**)0x1000 = "this should not cause a pagefault";
-
     int ret = mprotect((int*)4096, 1);
     printf("XV6_TEST_OUTPUT: Return value of mprotect : %d\n", ret);
 
