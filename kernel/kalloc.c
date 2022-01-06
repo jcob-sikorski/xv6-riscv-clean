@@ -68,15 +68,23 @@ kfree(void *pa)
 void *
 kalloc(void)
 {
-  struct run *r;
+  struct run *r, *temp;
 
   acquire(&kmem.lock);
-  r = kmem.freelist;
-  if(r)
-    kmem.freelist = r->next;
+  r = kmem.freelist; // get first element of freelist
+  if(r) { // if first element exists
+    kmem.freelist = r->next; // point freelist to its second element
+    temp = kmem.freelist;
+    if (temp)
+      kmem.freelist = temp->next;
+  }
   release(&kmem.lock);
 
-  if(r)
+  if(r) {
     memset((char*)r, 5, PGSIZE); // fill with junk
+    if (temp)
+      memset((char*)temp, 5, PGSIZE);
+  }
+
   return (void*)r;
 }
