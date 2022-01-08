@@ -26,7 +26,7 @@ struct {
   struct run *freelist;
 } kmem;
 
-struct run *allocpgs;
+struct run allocpgs;
 
 void
 kinit()
@@ -93,19 +93,31 @@ kalloc(void)
       memset((char*)temp, 5, PGSIZE);
   }
 
-  r->next = temp;
-  temp->next = allocpgs;
-  allocpgs = r; // make r first element of freelist
+  if (r) {
+    if (temp) {
+      r->next = temp;
+      temp->next = &allocpgs;
+    }
+    else {
+      r->next = &allocpgs;
+    }
+    allocpgs = *r; // make r first element of freelist
+  }
   return (void*)r;
 }
 
 int
 dump_allocated(int *frames, int numframes)
 {
-  struct run *temp = allocpgs;
+  if (numframes > counter) {
+    return -1;
+  }
+  struct run *temp = &allocpgs;
   for (int i = 0; i < numframes; i++) {
-    frames = temp->index;
+    *frames = temp->index;
     frames++;
     temp = temp->next;
   }
+
+  return 0;
 }
