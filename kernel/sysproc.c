@@ -191,7 +191,7 @@ uint sys_dump_allocated(void)
 {
   int *frames;
   int numframes;
-  if(argaddr(0, (uint*) &frames) < 0)
+  if(argaddr(0, (uint64*) &frames) < 0)
     return -1;
   if(argint(1, &numframes) < 0)
     return -1;
