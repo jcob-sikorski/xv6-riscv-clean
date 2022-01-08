@@ -14,14 +14,19 @@ void freerange(void *pa_start, void *pa_end);
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.
 
+int counter = 0;
+
 struct run {
   struct run *next;
+  int index;
 };
 
 struct {
   struct spinlock lock;
   struct run *freelist;
 } kmem;
+
+struct run *allocpgs;
 
 void
 kinit()
@@ -35,8 +40,9 @@ freerange(void *pa_start, void *pa_end)
 {
   char *p;
   p = (char*)PGROUNDUP((uint64)pa_start);
-  for(; p + PGSIZE <= (char*)pa_end; p += PGSIZE)
+  for(; p + PGSIZE <= (char*)pa_end; p += PGSIZE) {
     kfree(p);
+  }
 }
 
 // Free the page of physical memory pointed at by v,
@@ -58,7 +64,8 @@ kfree(void *pa)
 
   acquire(&kmem.lock);
   r->next = kmem.freelist;
-  kmem.freelist = r;
+  r->index = counter++;
+  kmem.freelist = r; // make r first element of freelist
   release(&kmem.lock);
 }
 
@@ -86,5 +93,19 @@ kalloc(void)
       memset((char*)temp, 5, PGSIZE);
   }
 
+  r->next = temp;
+  temp->next = allocpgs;
+  allocpgs = r; // make r first element of freelist
   return (void*)r;
+}
+
+int
+dump_allocated(int *frames, int numframes)
+{
+  struct run *temp = allocpgs;
+  for (int i = 0; i < numframes; i++) {
+    frames = temp->index;
+    frames++;
+    temp = temp->next;
+  }
 }
