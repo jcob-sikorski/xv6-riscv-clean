@@ -23,3 +23,4 @@
 #define SYS_getfilenum 22
 #define SYS_mprotect 23
 #define SYS_munprotect 24
+#define SYS_dump_allocated 25

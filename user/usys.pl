@@ -39,3 +39,4 @@ entry("uptime");
 entry("getfilenum");
 entry("mprotect");
 entry("munprotect");
+entry("dump_allocated");

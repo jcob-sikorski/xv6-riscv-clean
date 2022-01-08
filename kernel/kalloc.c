@@ -118,6 +118,5 @@ dump_allocated(int *frames, int numframes)
     frames++;
     temp = temp->next;
   }
-
   return 0;
 }

@@ -186,3 +186,16 @@ uint sys_munprotect(void)
 
   return 0;
 }
+
+uint sys_dump_allocated(void) 
+{
+  int *frames;
+  int numframes;
+  if(argaddr(0, &frames) < 0)
+    return -1;
+  if(argaddr(1, &numframes) < 0)
+    return -1;
+
+  dump_allocated(frames, numframes);
+  return 0;
+}

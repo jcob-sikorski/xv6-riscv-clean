@@ -107,6 +107,7 @@ extern uint64 sys_uptime(void);
 extern uint64 sys_getfilenum(void);
 extern uint64 sys_mprotect(void);
 extern uint64 sys_munprotect(void);
+extern uint64 sys_dump_allocated(void);
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -133,6 +134,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getfilenum] sys_getfilenum,
 [SYS_mprotect] sys_mprotect,
 [SYS_munprotect] sys_munprotect,
+[SYS_dump_allocated] sys_dump_allocated,
 };
 
 void
