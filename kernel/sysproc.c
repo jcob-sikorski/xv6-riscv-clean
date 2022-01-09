@@ -195,10 +195,7 @@ uint sys_dump_allocated(void)
     return -1;
   if(argint(1, &numframes) < 0)
     return -1;
-
-  kframes = malloc(numframes*sizeof(*kframes));
   dump_allocated(kframes, numframes);
-
-  copyout(myproc()->pagetable, uframes, (char*) kframes, (uint64) numframes);
+  copyout(myproc()->pagetable, (uint64) *uframes, (char*) kframes, (uint64) numframes);
   return 0;
 }
