@@ -87,12 +87,6 @@ kalloc(void)
   }
   release(&kmem.lock);
 
-  if(r) {
-    memset((char*)r, 5, PGSIZE); // fill with junk
-    if (temp)
-      memset((char*)temp, 5, PGSIZE);
-  }
-
   if (r) {
     if (temp) {
       r->next = temp;
@@ -101,7 +95,13 @@ kalloc(void)
     else {
       r->next = &allocpgs;
     }
-    allocpgs = *r; // make r first element of freelist
+    allocpgs = *r; // make r first element of allocpgs
+  }
+
+  if(r) {
+    memset((char*)r, 5, PGSIZE); // fill with junk
+    if (temp)
+      memset((char*)temp, 5, PGSIZE);
   }
   return (void*)r;
 }
