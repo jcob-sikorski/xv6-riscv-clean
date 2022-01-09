@@ -5,7 +5,7 @@ int
 main(int argc, char *argv[])
 {
     int numframes = 50;
-    int *frames = malloc(numframes*sizeof(*frames));;
+    int *frames = malloc(numframes*sizeof(*frames));
     memset(frames, 0, sizeof(*frames));
 
     dump_allocated(frames, numframes);

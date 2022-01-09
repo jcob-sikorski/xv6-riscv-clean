@@ -189,13 +189,16 @@ uint sys_munprotect(void)
 
 uint sys_dump_allocated(void) 
 {
-  int *frames;
+  int *uframes, *kframes;
   int numframes;
-  if(argaddr(0, (uint64*) &frames) < 0)
+  if(argaddr(0, (uint64*) &uframes) < 0)
     return -1;
   if(argint(1, &numframes) < 0)
     return -1;
 
-  dump_allocated(frames, numframes);
+  kframes = malloc(numframes*sizeof(*kframes));
+  dump_allocated(kframes, numframes);
+
+  copyout(myproc()->pagetable, uframes, (char*) kframes, (uint64) numframes);
   return 0;
 }
