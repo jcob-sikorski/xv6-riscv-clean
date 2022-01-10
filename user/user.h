@@ -27,7 +27,7 @@ int uptime(void);
 int getfilenum(int);
 int mprotect(int*, int);
 int munprotect(int*, int);
-int dump_allocated(int*, int);
+int dump_allocated(int[], int);
 
 
 // ulib.c

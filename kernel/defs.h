@@ -63,7 +63,7 @@ void            ramdiskrw(struct buf*);
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
-int             dump_allocated(int *frames, int numframes);
+int             dump_allocated(int frames[], int numframes);
 
 // log.c
 void            initlog(int, struct superblock*);

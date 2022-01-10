@@ -5,13 +5,11 @@ int
 main(int argc, char *argv[])
 {
     int numframes = 50;
-    int *frames = malloc(numframes*sizeof(*frames));
-    memset(frames, 0, sizeof(*frames));
+    int frames[numframes];
 
     dump_allocated(frames, numframes);
     for (int i = 0; i < numframes; i++) {
-        printf("%d\n", *frames);
-        frames++;
+        printf("%d\n", frames[i]);
     }
     return 0;
 }

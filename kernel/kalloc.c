@@ -107,15 +107,14 @@ kalloc(void)
 }
 
 int
-dump_allocated(int *frames, int numframes)
+dump_allocated(int frames[], int numframes)
 {
   if (numframes > counter) {
     return -1;
   }
   struct run *temp = &allocpgs;
   for (int i = 0; i < numframes; i++) {
-    *frames = temp->index;
-    frames++;
+    frames[i] = temp->index;
     temp = temp->next;
   }
   return 0;
