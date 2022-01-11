@@ -198,7 +198,7 @@ uint sys_dump_allocated(void)
 
   int frames[numframes];
 
-  copyin(myproc()->pagetable, (uint64) &frames, frames_ptr, (uint64) sizeof(frames));
+  copyin(myproc()->pagetable, (char*) &frames, frames_ptr, (uint64) sizeof(frames));
   dump_allocated(frames, numframes);
   copyout(myproc()->pagetable, frames_ptr, (char*) &frames, (uint64) sizeof(frames));
   return 0;

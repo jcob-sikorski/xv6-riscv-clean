@@ -79,30 +79,17 @@ kalloc(void)
 
   acquire(&kmem.lock);
   r = kmem.freelist; // get first element of freelist
-  if(r) { // if first element exists
+  if(r) // if first element exists
     kmem.freelist = r->next; // point freelist to its second element
-    temp = kmem.freelist;
-    if (temp)
-      kmem.freelist = temp->next;
-  }
   release(&kmem.lock);
 
   if (r) {
-    if (temp) {
-      r->next = temp;
-      temp->next = &allocpgs;
-    }
-    else {
-      r->next = &allocpgs;
-    }
+    r->next = &allocpgs;
     allocpgs = *r; // make r first element of allocpgs
   }
 
-  if(r) {
+  if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
-    if (temp)
-      memset((char*)temp, 5, PGSIZE);
-  }
   return (void*)r;
 }
 
